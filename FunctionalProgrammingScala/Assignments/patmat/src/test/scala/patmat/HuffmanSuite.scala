@@ -29,7 +29,12 @@ class HuffmanSuite extends FunSuite {
   test("string2chars(\"hello, world\")") {
     assert(string2Chars("hello, world") === List('h', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd'))
   }
-
+  
+  test("times(Lis('a','b','a','c','c'))")
+  {
+	assert(times(List('a','b','a','c','c')) === List(('c',2),('a',2),('b',1)))
+  }
+  
   test("makeOrderedLeafList for some frequency table") {
     assert(makeOrderedLeafList(List(('t', 2), ('e', 1), ('x', 3))) === List(Leaf('e',1), Leaf('t',2), Leaf('x',3)))
   }
@@ -38,10 +43,25 @@ class HuffmanSuite extends FunSuite {
     val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x', 4))
     assert(combine(leaflist) === List(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3), Leaf('x',4)))
   }
-
+  
+  test("until of some leaf list") {
+    val leaflist = List(Leaf('e', 1), Leaf('t', 2), Leaf('x',4))
+    val result = Fork(Fork(Leaf('e',1),Leaf('t',2),List('e', 't'),3),Leaf('x',4),List('e','t','x'),7)
+    val testresult = until(singleton, combine)(leaflist)
+    assert(testresult === List(result))
+  }
+  
+  test("testing decode")
+  {
+	  val right = Fork(Leaf('b',2),Leaf('c',3), List('b','c'),5)
+	  val left = Leaf('a',1)
+	  val tree = Fork(left,right, List('a','b','c'), 6)
+	  assert(decode(tree, List(1,0,0,1,1)) === List('b','a','c'))
+  }
+  
   test("decode and encode a very short text should be identity") {
     new TestTrees {
-      assert(decode(t1, encode(t1)("ab".toList)) === "ab".toList)
+      assert(decode(t1, quickEncode(t1)("ab".toList)) === "ab".toList)
     }
   }
 }
